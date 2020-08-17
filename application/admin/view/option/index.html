@@ -1,0 +1,101 @@
+{extend name="layouts/cms"}
+{block name='body-content'}
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+    <legend>系统配置</legend>
+</fieldset>
+<form class="layui-form form-opArticle">
+    {volist name="list" id="vo" key="k"}
+    {switch vo.option_type}
+    {case 1}
+    <div class="layui-form-item">
+        <label class="layui-form-label">{$vo.option_explain}：</label>
+        <div class="layui-input-block">
+            <input type="text" name="data[{$vo.option_name}]" lay-verify="title" autocomplete="off" placeholder="请输入" value="{$vo.option_value}" class="layui-input">
+        </div>
+    </div>
+    {/case}
+    {case 2}
+    <div class="layui-form-item">
+        <label class="layui-form-label">{$vo.option_explain}：</label>
+        <div class="layui-upload layui-input-inline">
+            <button type="button" name="{$vo.option_name}" class="layui-btn btn_upload_img">
+                <i class="layui-icon">&#xe67c;</i>上传
+            </button>
+            <img name="{$vo.option_name}" style="width: 50px;height: 50px" class="layui-upload-img img-upload-view"
+                 src="{$vo.option_value}">
+        </div>
+    </div>
+    <input type="hidden" name="data[{$vo.option_name}]" class="menu-icon {$vo.option_name}"
+           value="{$vo.option_value}">
+    {/case}
+    {default /}
+    {/switch}
+
+    {/volist}
+
+
+
+    {:token()}
+    <div class="layui-form-item">
+        <div class="layui-input-block div-form-op">
+            <button class="layui-btn" type="button" onclick="edit()">提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">放弃</button>
+        </div>
+    </div>
+</form>
+
+{/block}
+
+{block name='single-content'}
+<script src="__CMS__/js/common.js"></script>
+
+<script>
+    //按钮的点击事件
+    function edit() {
+
+        var toUrl = "{:url('admin/option/editOption')}";
+        var postData = $(".form-opArticle").serialize();
+        ToPostPopupsDeal(toUrl, postData);
+    }
+
+    layui.use('upload', function () {
+
+        var upload = layui.upload;
+        var tag_token = $(".tag_token").val();
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '.btn_upload_img'
+            , type: 'images'
+            , exts: 'jpg|png|gif' //设置一些后缀，用于演示前端验证和后端的验证
+            //,auto:false //选择图片后是否直接上传
+            //,accept:'images' //上传文件类型
+            , url: "{:url('api/upload/img_file')}"
+            , data: {'_token': tag_token}
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('.img-upload-view').attr('src', result); //图片链接（base64）
+                });
+            }
+            , done: function (res) {
+                dialog.tip(res.message);
+
+                //如果上传成功
+                if (res.status == 1) {
+                    var option_name = this.item[0].name;
+                    $('.'+option_name).val(res.data.url);
+                }
+            }
+            , error: function () {
+                //演示失败状态，并实现重传
+                return layer.msg('上传失败,请重新上传');
+            }
+        });
+    });
+</script>
+
+
+
+
+
+{/block}

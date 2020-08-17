@@ -1,0 +1,88 @@
+{extend name="common/header"}
+{block name='body-content'}
+    <div class="session search container">
+        <div class="current-position">
+            <span class="current">当前位置：</span>
+            <a href="/" class="position">工程平台</a>
+            <span class="next">></span>
+            <a href="#" class="position">搜索页</a>
+        </div>
+        <div class="list-innner search">
+            <div class="list-innner-left">
+                <div class="search-result">
+                    您搜索的内容是：<span class="result">{$keyword}</span>
+                </div>
+                {volist name="list" id="vo"}
+                <div class="list-item1">
+                    <a href="{:url('index/article/detail',['id'=>$vo['id']])}" class="list-item-img" style="background-image: url({$vo['picture']})">
+                    </a>
+                    <div class="list-item-text">
+                        <a href="{:url('index/article/detail',['id'=>$vo['id']])}" class="item-title">{$vo['title']}</a>
+                        <div class="item-info">
+                            <div class="date">
+                                {$vo['create_time']}
+                            </div>
+                            <div class="collect">
+                                <svg class="icon" aria-hidden="true">
+                                    <use xlink:href="#icon-shoucang"></use>
+                                </svg>
+                                <div class="collect-text" onclick="addFavorite({$vo['id']})">
+                                    <span>收藏</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {/volist}
+                <div class="paging">
+                    {$list|raw}
+                </div>
+
+            </div>
+            <div class="list-innner-right ">
+                <div class="classify clearfix">
+                    <div class="classify-title">
+                        推荐
+                    </div>
+                    <div class="classify-inner">
+                        <div class="code">
+                            <p class="look">找活找人</p>
+                            <P class="scan">扫码进入</P>
+                            <P class="labour">工程劳务</P>
+                            <div class="code-img" style="background-image: url('__INDEX__/images/code.jpg')">
+
+                            </div>
+                        </div>
+                        <div class="down-code">
+                            <div class="down-er" style="background-image: url('__INDEX__/images/wei_er.png')">
+                            </div>
+                            <div class="down-text">
+                                <p>扫左侧二维码</p>
+                                <p>获取最新</p>
+                                <p>免费资料</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    function addFavorite(id) {
+        var toUrl = "{:url('index/favorite/addFavorite')}";
+        var postData = {article_id:id};
+        $.post(
+            toUrl,
+            postData,
+            function (result) {
+                alert(result.msg);
+                if(result.code == 0){
+
+                }else{
+                    //失败
+                }
+            },"JSON");
+    }
+</script>
+{/block}

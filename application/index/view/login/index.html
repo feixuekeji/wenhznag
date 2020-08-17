@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="__CSS__/common.css">
+    <link rel="stylesheet" type="text/css" href="__CSS__/welogin.css" />
+    <title>微信登录</title>
+</head>
+
+<body>
+<div class="login block">
+    <div class="we-login">
+        <p class="login-title">微信登录</p>
+        <div class="login-img">
+            <img src="{$ticket}" />
+        </div>
+        <div class="login-desc">
+            <p><span>扫码</span>
+                <span>></span>
+                <span>关注</span>
+                <span>></span>
+                <span>登录</span></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    var wsServer = "{$socket}";
+    var websocket = new WebSocket(wsServer);
+    websocket.onopen = function (evt) {
+        console.log("Connected to WebSocket server.");
+        //ws.send("Hello WebSockets!");
+        websocket.send("{$uid}");
+        //设置心跳，避免服务器断开
+        setInterval(function () {
+            websocket.send("{$uid}");
+        }, 30000)
+    };
+
+    websocket.onclose = function (evt) {
+        console.log("Disconnected");
+    };
+
+    websocket.onmessage = function (evt) {
+        console.log('Retrieved data from server: ' + evt.data);
+        var res = JSON.parse(evt.data);
+        if(res.token !== '' && res.token !== undefined){
+            window.location='/index/login/login?token='+res.token;
+        }
+    };
+
+    websocket.onerror = function (evt, e) {
+        console.log('Error occured: ' + evt.data);
+    };
+</script>
+</body>
+
+</html>

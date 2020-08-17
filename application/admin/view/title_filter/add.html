@@ -1,0 +1,42 @@
+{extend name="layouts/cms"}
+{block name='body-content'}
+<form class="layui-form form-opArticle layui-form-pane">
+
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">关键词</label>
+        <div class="layui-input-block">
+                <textarea placeholder="请输入文本" name="keyword" required
+                          lay-verify="required" class="layui-textarea"></textarea>
+        </div>
+    </div>
+
+
+    {:token()}
+    <div class="layui-form-item">
+        <div class="layui-input-block div-form-op">
+            <button class="layui-btn" type="button" onclick="add()">提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">放弃</button>
+        </div>
+    </div>
+</form>
+
+{/block}
+
+{block name='single-content'}
+<script src="__CMS__/js/common.js"></script>
+
+<script>
+    //按钮的点击事件
+    function add() {
+
+        var toUrl = "{:url('admin/titleFilter/addFilter')}";
+        var postData = $(".form-opArticle").serialize();
+        ToPostPopupsDeal(toUrl, postData);
+    }
+</script>
+
+
+
+
+
+{/block}

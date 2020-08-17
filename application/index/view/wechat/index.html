@@ -1,0 +1,63 @@
+{extend name="common/header"}
+
+{block name='body-content'}
+    <div class="public container session">
+        <div class="current-position">
+            <span class="current">当前位置：</span>
+            <a href="/" class="position">工程平台</a>
+            <span class="next">></span>
+            <a href="#" class="position">列表页</a>
+        </div>
+        <div class="public-inner">
+            <div class="public-inner-left">
+                <div class="public-title">
+                    公众号推荐
+                </div>
+                <div class="publist-list">
+
+                    {volist name="top_list" id="vo"}
+                    <a href="{:url('index/wechat/getArticle',['wechat_id'=>$vo['id']])}" class="public-list-item">
+                        {$vo['name']}
+                    </a>
+                    {/volist}
+
+                </div>
+            </div>
+            <div class="public-inner-right">
+                <div class="public-inner-items">
+                    {volist name="list" id="vo"}
+                    <div class="public-inner-item">
+                        <a href="{:url('index/wechat/getArticle',['wechat_id'=>$vo['id']])}">
+                        <div class="item-imgbox">
+                            <div class="item-img" style="background-image: url({$vo['avatar']})">
+                            </div>
+                        </div>
+                        </a>
+                        <a href="{:url('index/wechat/getArticle',['wechat_id'=>$vo['id']])}" class="item-title">
+                            {$vo['name']}
+                        </a>
+                        <a href="{:url('index/wechat/getArticle',['wechat_id'=>$vo['id']])}" class="at-once">
+                            立即查看
+                        </a>
+                    </div>
+                    {/volist}
+
+                </div>
+
+            </div>
+        </div>
+        <div class="paging">
+            {$list|raw}
+            </div>
+    </div>
+
+    <script>
+        $(function () {
+            $('.public-inner-item').hover(function () {
+                $(this).find("." + "at-once").addClass("block");
+            }, function () {
+                $(this).find("." + "at-once").removeClass("block");
+            });
+        })
+    </script>
+    {/block}

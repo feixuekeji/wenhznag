@@ -1,0 +1,97 @@
+{extend name="common/header"}
+
+{block name='body-content'}
+<link rel="stylesheet" href="__INDEX__/dist/css/animate.min.css">
+<link rel="stylesheet" href="__INDEX__/dist/css/swiper.min.css">
+    <div class="home container session">
+        <div class="home-banner ">
+            <div class="banner">
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        {volist name="slide_list" id="vo"}
+                        <div class="swiper-slide">
+                            <a href="{$vo['url']}"><img src="{$vo['image']}" /></a>
+                        </div>
+                        {/volist}
+                    </div>
+                </div>
+            </div>
+            <div class="code">
+                <p class="look">找活找人</p>
+                <P class="scan">扫码进入</P>
+                <P class="labour">工程劳务</P>
+                <div class="code-img" style="background-image: url('__INDEX__/images/code.jpg')">
+
+                </div>
+            </div>
+        </div>
+        <div class="public-recommend">
+            <a href="#" class="public-title">
+                热门公众号推荐
+            </a>
+            <div class="public-inner">
+                <div class="public-list">
+                    {volist name="wechat_list" id="vo"}
+                    <a href="{:url('index/wechat/getArticle',['wechat_id'=>$vo['id']])}" class="public-list-item">
+                        <div class="item-headimg" style="background-image: url({$vo['avatar']})">
+
+                        </div>
+                        <div class="item-text">
+                            {$vo['name']}
+                        </div>
+                    </a>
+                    {/volist}
+
+                </div>
+            </div>
+
+        </div>
+        {foreach $list as $key=>$vo }
+        <div class="core">
+            <div class="core-title">
+                <a href="{:url('index/article/getArticleList',['catalog_id'=>$vo['catalog_id']])}" class="title-text">
+                    {$vo['catalog_name']}
+                </a>
+                <a class="more" href="{:url('index/article/getArticleList',['catalog_id'=>$vo['catalog_id']])}">
+                    更多>>
+                </a>
+            </div>
+            <div class="core-inner">
+                {foreach $vo['list'] as $k=>$v }
+                <a href="{:url('index/article/detail',['id'=>$v['id']])}" class="core-inner-item">
+                    <div class="dot">
+                        •
+                    </div>
+                    <div class="core-item-text">
+                        {$v['title']}
+                    </div>
+                </a>
+                {/foreach}
+            </div>
+        </div>
+        {/foreach}
+
+
+
+        <div class="friend-link">
+            <div class="link-title">
+                <span>友情链接</span>
+            </div>
+            <div class="link">
+                {foreach :app('cache')->store('default')->get('link_list') as $key=>$vo }
+                    <a href="{$vo['url']}">{$vo['name']}</a>
+                {/foreach}
+            </div>
+        </div>
+    </div>
+
+    <script src="__INDEX__/dist/js/swiper.min.js"></script>
+    <script>
+        var mySwiper = new Swiper('.swiper-container', {
+            loop: true,
+            speed: 500,
+            autoplay: true,//可选选项，自动滑动
+        })
+
+    </script>
+    {/block}

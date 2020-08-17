@@ -1,0 +1,149 @@
+{extend name="common/header"}
+
+{block name='body-content'}
+    <div class="mycenter usercenter session container">
+        <div class="mycenter-left">
+            {include file="common/user_center_left" /}
+            <div class="mycenter-list-inner collected">
+                {if count($list) == 0}
+                    <div class="publish-text">
+                        还没收藏内容
+                    </div>
+                {/if}
+
+
+                {volist name="list" id="vo"}
+                <div class="list-item1">
+                    <div class="list-item-img" style="background-image: url({$vo['picture']})">
+                    </div>
+                    <div class="list-item-text">
+                        <p class="item-title">{$vo['title']}</p>
+                        <div class="item-info">
+                            <div class="date">
+                                {$vo['create_time']}
+                            </div>
+                            <div class="collect">
+                                <svg class="icon" aria-hidden="true">
+                                    <use xlink:href="#icon-shoucang"></use>
+                                </svg>
+                                {if empty($is_me)}
+                                <div class="collect-text" onclick="addFavorite({$vo['article_id']})">
+                                    <span>收藏</span>
+                                </div>
+                                {else}
+                                <div class="collect-text" onclick="cancelFavorite({$vo['article_id']})">
+                                    <span>取消收藏</span>
+                                </div>
+                                {/if}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {/volist}
+
+            </div>
+                {$list|raw}
+
+        </div>
+        <div class="mycenter-right">
+            <div class="recommend-user">
+                <div class="title">
+                    推荐用户
+                </div>
+                <div class="user-list">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script>
+        $(".mycenter-list-item").on('click', function () {
+            $(this).addClass("active").siblings().removeClass("active");
+        })
+        $(".head-img").on('click', function () {
+            $("#getimg").click();
+            // $("#changSrc").on('click', function () {
+            // $(this).attr("src","");
+            // })
+        })
+        $(function () {
+            $("#getimg").change(function (e) {
+                console.log(e, "111");
+                console.log("12121")
+                // $("#changSrc").attr("src","");
+            })
+
+
+
+        })
+
+        $(document).ready(function(){
+            getTopUser();
+
+        });
+        function getTopUser() {
+            var toUrl = "{:url('index/user/getTopUser')}";
+            var postData = {};
+            $.post(
+                toUrl,
+                postData,
+                function (result) {
+                    if(result.code == 0){
+                        var str_html = '';
+                        $.each(result.data.data,function (i,e) {
+                            str_html +=
+                                "<a class=\"user-list-item\" href='"+e.id+"'>\n" +
+                                "                        <div class=\"user-img\" style=\"background-image: url("+e.avatar+")\">\n" +
+                                "                        </div>\n" +
+                                "                        <div class=\"user-name\">\n" +e.nickname + "/n"+
+                                "                        </div>\n" +
+                                "                    </a>";
+                        });
+                        $(".user-list").html(str_html);
+                    }else{
+                        //失败
+                        layer.msg(result.message);
+                    }
+                },"JSON");
+        }
+
+
+        function addFavorite(id) {
+            var toUrl = "{:url('index/favorite/addFavorite')}";
+            var postData = {article_id:id};
+            $.post(
+                toUrl,
+                postData,
+                function (result) {
+                    if(result.code == 0){
+
+                    }else{
+                        //失败
+                        layer.msg(result.msg);
+                    }
+                },"JSON");
+        }
+        function cancelFavorite(id) {
+            var toUrl = "{:url('index/favorite/cancelFollow')}";
+            var postData = {article_id:id};
+            $.post(
+                toUrl,
+                postData,
+                function (result) {
+                    if(result.code == 0){
+                        alert(result.msg);
+                    }else{
+                        //失败
+                        alert(result.msg);
+                    }
+                },"JSON");
+        }
+
+    </script>
+
+
+{/block}

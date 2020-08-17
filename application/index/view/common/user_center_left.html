@@ -1,0 +1,77 @@
+<div class="mycenter-list">
+    {if empty($is_me)}
+    <a href="{:url('index/article/getUserArticleList',['user_id'=>$user_id])}" class="mycenter-list-item {if $Request.action == strtolower('getUserArticleList')} active{/if}">
+        <div class="item-img">
+            <img src="__INDEX__/images/fabu.png" />
+        </div>
+        <div class="item-title">
+            TA的发布
+        </div>
+    </a>
+    <a href="{:url('index/favorite/getFavoriteList',['user_id'=>$user_id])}" class="mycenter-list-item {if $Request.action == strtolower('getFavoriteList')} active{/if}">
+        <div class="item-img">
+            <img src="__INDEX__/images/shoucang.png" />
+        </div>
+        <div class="item-title">
+            TA的收藏
+        </div>
+    </a>
+    <a href="{:url('index/follow/getFollowList',['user_id'=>$user_id])}" class="mycenter-list-item {if $Request.action == strtolower('getFollowList')} active{/if}">
+        <div class="item-img">
+            <img src="__INDEX__/images/guanzhu.png" />
+        </div>
+        <div class="item-title">
+            TA的关注
+        </div>
+    </a>
+    <a href="{:url('index/follow/getFansList',['user_id'=>$user_id])}" class="mycenter-list-item {if $Request.action == strtolower('getFansList')} active{/if}">
+        <div class="item-img">
+            <img src="__INDEX__/images/fensi.png" />
+        </div>
+        <div class="item-title">
+            TA的粉丝
+        </div>
+    </a>
+    {else}
+    <a href="{:url('index/article/getUserArticleList')}" class="mycenter-list-item  {if $Request.action == strtolower('getUserArticleList')} active{/if}">
+        <div class="item-img">
+            <img src="__INDEX__/images/fabu.png" />
+        </div>
+        <div class="item-title">
+            我的发布
+        </div>
+    </a>
+    <a href="{:url('index/favorite/getFavoriteList')}" class="mycenter-list-item {if $Request.action == strtolower('getFavoriteList')} active{/if}">
+        <div class="item-img">
+            <img src="__INDEX__/images/shoucang.png" />
+        </div>
+        <div class="item-title">
+            我的收藏
+        </div>
+    </a>
+    <a href="{:url('index/follow/getFollowList')}" class="mycenter-list-item {if $Request.action == strtolower('getFollowList')} active{/if}">
+        <div class="item-img">
+            <img src="__INDEX__/images/guanzhu.png" />
+        </div>
+        <div class="item-title">
+            我的关注
+        </div>
+    </a>
+    <a href="{:url('index/follow/getFansList')}" class="mycenter-list-item {if $Request.action == strtolower('getFansList')} active{/if}">
+        <div class="item-img">
+            <img src="__INDEX__/images/fensi.png" />
+        </div>
+        <div class="item-title">
+            我的粉丝
+        </div>
+    </a>
+    <a href="{:url('index/user/getMyInfo')}" class="mycenter-list-item {if $Request.action == strtolower('getMyInfo')} active{/if}">
+        <div class="item-img">
+            <img src="__INDEX__/images/shezhi.png" />
+        </div>
+        <div class="item-title">
+            账号设置
+        </div>
+    </a>
+    {/if}
+</div>

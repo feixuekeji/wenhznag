@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="{$seo['keyword']|default= app('cache')->store('default')->get('seo_keyword')}">
+    <meta name="description" content="{$seo['description']|default= app('cache')->store('default')->get('seo_description')}">
+    <title>{$seo['title']|default= app('cache')->store('default')->get('seo_title')}</title>
+    <link href="__INDEX__/css/common1.css" type="text/css" rel="stylesheet" />
+    <link href="__INDEX__/css/index.css" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="__INDEX__/lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="__INDEX__/css/common.css">
+    <link href="__LAYUI__/css/layui.css" rel="stylesheet">
+    <!--采用模块化方式-->
+    <script src="__INDEX__/lib/jquery/jquery.js"></script>
+    <script type="text/javascript" src="__LAYUI__/layui.js"></script>
+    <script type="text/javascript" src="__LAYUI__/layer.js"></script>
+    <script src="__INDEX__/js/iconfont.js"></script>
+    <script src="__INDEX__/lib/bootstrap/js/bootstrap.js"></script>
+    <script src="__INDEX__/js/common.js"></script>
+</head>
+
+<body>
+<div class="header">
+    <div class="header-inner container">
+        <div class="logo">
+            <a href="index.html">
+                <img src="{:app('cache')->store('default')->get('logo')}" />
+            </a>
+        </div>
+        <div class="header-list">
+            {foreach :app('cache')->store('default')->get('menu_list') as $key=>$vo }
+            <a href="{$vo['href']}" class="header-list-item">
+                {$vo['name']}
+            </a>
+            {/foreach}
+        </div>
+        <div class="header-search">
+            <form class="searchform">
+                <input class="search-text" type="text" />
+                <button type="button" class="search-btn btn" onclick="search()">搜索</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{block name="body-content"}{/block}
+
+
+
+<div class="footer">
+    <div class="container">
+        <div class="footer-nav">
+            <ul>
+                <li><a href="#">联系我们</a> <span>|</span></li>
+                <li><a href="#">关于本站</a> <span>|</span></li>
+                <li><a href="#">版权声明</a> <span>|</span></li>
+                <li><a href="#">友情链接</a> <span>|</span></li>
+                <li><a href="#">网站地图</a> </li>
+            </ul>
+
+        </div>
+        <p class="footer-desc">{:app('cache')->store('default')->get('footer_tip')}<span>|</span>{:app('cache')->store('default')->get('icp_record')}</p>
+
+    </div>
+</div>
+<!--这里放统计代码-->
+{:app('cache')->store('default')->get('statistical_code')}
+
+
+
+<script>
+    function search()
+    {
+        var keyword = $(".search-text").val();
+        if (keyword == null || keyword == undefined || keyword== '')
+        {
+            alert('关键词不能为空');
+            return false;
+        }
+
+        var toUrl = "{:url('index/article/getSearchList')}"+"?keyword="+ keyword;
+        window.location.href = toUrl;
+        
+    }
+
+    function addFavorite(id) {
+        var toUrl = "{:url('index/favorite/addFavorite')}";
+        var postData = {article_id:id};
+        $.post(
+            toUrl,
+            postData,
+            function (result) {
+                alert(result.msg);
+                if(result.msg == 'login')
+                    window.location.href = "{:url('index/login/index')}";
+                if(result.code == 0){
+
+                }else{
+                    //失败
+                }
+            },"JSON");
+    }
+
+    function toFollow(follow_user_id) {
+        console.log(event);
+        var target = event.target;
+        var toUrl = "{:url('index/follow/toFollow')}";
+        var postData = {follow_user_id:follow_user_id};
+        $.post(
+            toUrl,
+            postData,
+            function (result) {
+                if(result.msg == 'login')
+                    window.location.href = "{:url('index/login/index')}";
+                if(result.code == 0){
+                    target.outerHTML = "<div class=\"people-state active\" onclick=\"toFollow("+follow_user_id+")\">取消关注</div>";
+
+                }else{
+                    //失败
+                    layer.msg(result.msg);
+                }
+            },"JSON");
+    }
+    function cancelFollow(follow_user_id) {
+        console.log(event);
+        var target = event.target;
+        var toUrl = "{:url('index/follow/cancelFollow')}";
+        var postData = {follow_user_id:follow_user_id};
+        $.post(
+            toUrl,
+            postData,
+            function (result) {
+                if(result.msg == 'login')
+                    window.location.href = "{:url('index/login/index')}";
+                if(result.code == 0){
+                    target.outerHTML = "<div class=\"people-state \" onclick=\"toFollow("+follow_user_id+")\">+关注</div>";
+                }else{
+                    //失败
+                    layer.msg(result.msg);
+                }
+            },"JSON");
+    }
+
+</script>
+
+</body>
+
+</html>

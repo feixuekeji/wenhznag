@@ -1,0 +1,190 @@
+{extend name='layouts/cms'}
+{block name='body-content'}
+
+<div class="demoTable">
+    搜索昵称：
+    <div class="layui-input-inline">
+        <input type="text" id="search_key" class="layui-input" >
+    </div>
+    <button type="button" class="layui-btn layui-btn-sm" data-type="reload" id="searchbtn">搜索</button>
+</div>
+<div class="layui-btn-group demoTable">
+    <button class="layui-btn" data-type="getCheckData">删除选中</button>
+</div>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<table id="demo" lay-filter="test"></table>
+<script src="__CMS__/js/admins.js"></script>
+<script src="__CMS__/js/common.js"></script>
+
+
+<script type="text/html" id="publishTpl">
+    <a href="{:url('admin/article/getUserPublishList')}?user_id={{d.id}}" class="layui-table-link" >{{ d.total_publish }}</a>
+</script>
+<script type="text/html" id="followTpl">
+    <a href="{:url('admin/follow/getFollowList')}?user_id={{d.id}}" class="layui-table-link" >{{ d.total_follow }}</a>
+</script>
+<script type="text/html" id="fansTpl">
+    <a href="{:url('admin/follow/getFansList')}?user_id={{d.id}}" class="layui-table-link" >{{ d.total_fans }}</a>
+</script>
+<script type="text/html" id="favoriteTpl">
+    <a href="{:url('admin/favorite/getFavoriteList')}?user_id={{d.id}}" class="layui-table-link" >{{ d.total_favorite }}</a>
+</script>
+<script type="text/html" id="avatarTpl">
+    <img  src="{{ d.avatar}}" width="40px" height="40px">
+</script>
+<script type="text/html" id="sexTpl">
+    {{#  if(d.gender == 1){ }}
+    男
+    {{#  } else if(d.gender == 2) { }}
+    女
+    {{#  } else { }}
+    未知
+    {{#  } }}
+</script>
+<script>
+    layui.use('table', function(){
+        var table = layui.table;
+
+        //第一个实例
+        var tableIns = table.render({
+            elem: '#demo'
+            ,url: '/admin/admin/getMemberList' //数据接口
+            ,method : 'post'
+            ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            ,page: true //开启分页
+            ,request: {
+                pageName: 'page' //页码的参数名称，默认：page
+                ,limitName: 'size' //每页数据量的参数名，默认：limit
+            }
+            ,parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.data.total, //解析数据长度
+                    "data": res.data.data //解析数据列表
+                };
+            }
+            ,cols: [[ //表头
+                {type:'checkbox', fixed: 'left'}
+                ,{field: 'id', title: 'ID',  sort: true, fixed: 'left'}
+                ,{field: 'openid', title: 'openid'}
+                ,{field: 'nickname', title: '昵称'}
+                ,{field: 'avatar', title: '头像',templet:'#avatarTpl'}
+                ,{field: 'gender', title: '性别',templet:'#sexTpl'}
+                ,{field: 'total_publish', title: '发布数',align:'center',templet:'#publishTpl'}
+                ,{field: 'total_follow', title: '关注数',templet:'#followTpl'}
+                ,{field: 'total_fans', title: '粉丝数',templet:'#fansTpl'}
+                ,{field: 'total_favorite', title: '收藏数',templet:'#favoriteTpl'}
+                ,{field: 'mobile', title: '手机号'}
+                ,{field: 'last_login_time', title: '最后登陆时间'}
+                ,{field: 'last_login_ip', title: 'ip'}
+                ,{fixed: 'right',title:'操作', align:'center', toolbar: '#barDemo'} //这里的toolbar值是模板元素的选择器
+
+            ]]
+        });
+        var $ = layui.$, active = {
+            reload: function(){
+                table.reload('demo', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        keyword:$('#search_key').val(),
+                    }
+                });
+
+
+            },
+            getCheckData: function(){ //获取选中数据
+                var checkStatus = table.checkStatus('demo')
+                    ,data = checkStatus.data;
+                var ids = [];
+                for (var i = 0; i < checkStatus.data.length; i++) {
+                    ids[i] = checkStatus.data[i].id;
+                }
+                delAdmin(ids);
+                tableIns.reload({
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                });
+                // layer.alert(JSON.stringify(data));
+                //layer.alert(JSON.stringify(ids));
+            }
+
+
+        };
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        $('#searchbtn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(demo)', function(obj){
+            console.log(obj)
+        });
+        //监听工具条
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail'){
+                layer.msg('ID：'+ data.id + ' 的查看操作');
+            } else if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
+                    var ids = [];
+                    ids[0] = data.id;
+                    //向服务端发送删除指令
+                    delAdmin(ids)
+
+                });
+            } else if(obj.event === 'edit'){
+                //layer.alert('编辑行：<br>'+ JSON.stringify(data))
+                editAdmin(data.id);
+            }
+        });
+
+    });
+
+</script>
+
+{/block}
+
+{block name='single-content'}
+
+
+<script>
+    //根据菜单ID 删除菜单记录
+    function delAdmin(ids) {
+        var toUrl = "{:url('admin/admin/deleteMember')}";
+        toUrl = toUrl.replace('AdminID', ids);
+        var postData = {'ids':ids};
+        $.post(
+            toUrl,
+            postData,
+            function (result) {
+                if(result.code == 0){
+                    layer.msg(result.msg);
+                }else{
+                    //失败
+                    layer.msg(result.msg);
+                }
+            },"JSON");
+
+    }
+
+    $(".btn-search-navMenu").on('click', function () {
+        //var str_search = $(".search_input").val();
+        $(".form-search").submit();
+    });
+
+</script>
+
+{/block}

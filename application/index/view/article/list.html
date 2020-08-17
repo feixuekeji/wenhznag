@@ -1,0 +1,144 @@
+{extend name="common/header"}
+
+{block name='body-content'}
+    <div class="list container session">
+        <div class="current-position">
+            <span class="current">当前位置：</span>
+            <a href="/" class="position">工程平台</a>
+            {volist name="catalog_path" id="vo"}
+            <span class="next">></span>
+            <a href="{:url('index/article/getArticleList',['catalog_id'=>$vo['id']])}" class="position">{$vo['name']}</a>
+            {/volist}
+        </div>
+        <div class="list-innner">
+            <div class="list-innner-left">
+                {volist name="list" id="vo"}
+                {if count($vo['image_list']) > 2 && rand(1, 2) == 2}
+                <div class="list-item2">
+                    <a href="{:url('index/article/detail',['id'=>$vo['id']])}" class="list-item-title">
+                        {$vo['title']}
+                    </a>
+                    <a href="{:url('index/article/detail',['id'=>$vo['id']])}" class="list-item-inner">
+                        <div class="list-item-img" style="background-image: url({$vo['image_list'][0]})">
+                        </div>
+                        <div class="list-item-img" style="background-image: url({$vo['image_list'][1]})">
+                        </div>
+                        <div class="list-item-img" style="background-image: url({$vo['image_list'][2]})">
+                        </div>
+                    </a>
+                    <div class="item-info">
+                        <div class="date">
+                            {$vo['create_time']}
+                        </div>
+                        <div class="author">
+                            {if $vo['user_id'] > 0}
+                            <a href="{:url('index/article/getUserArticleList',['user_id'=>$vo['user_id']])}">{$vo['nickname']}</a>
+                            {/if}
+                        </div>
+                        <div class="collect">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#icon-shoucang"></use>
+                            </svg>
+                            <div class="collect-text" onclick="addFavorite({$vo['id']})">
+                                <span>收藏</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {elseif count($vo['image_list']) > 0 /}
+                <div class="list-item1">
+                    <a href="#" class="list-item-img" style="background-image: url({$vo['picture']})">
+                    </a>
+                    <div class="list-item-text">
+                        <a href="{:url('index/article/detail',['id'=>$vo['id']])}" class="item-title">{$vo['title']}</a>
+                        <a href="{:url('index/article/detail',['id'=>$vo['id']])}" class="item-artical">{$vo['abstract']}</a>
+                        <div class="item-info">
+                            <div class="date">
+                                {$vo['create_time']}
+                            </div>
+                            <div class="author">
+                                {if $vo['user_id'] > 0}
+                                <a href="{:url('index/article/getUserArticleList',['user_id'=>$vo['user_id']])}">{$vo['nickname']}</a>
+                                {/if}
+                            </div>
+                            <div class="collect">
+                                <svg class="icon" aria-hidden="true">
+                                    <use xlink:href="#icon-shoucang"></use>
+                                </svg>
+                                <div class="collect-text" onclick="addFavorite({$vo['id']})">
+                                    <span>收藏</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {else /}
+
+                <div class="list-item3">
+                    <a href="{:url('index/article/detail',['id'=>$vo['id']])}" class="list-item-title">
+                        {$vo['title']}
+                    </a>
+                    <a href="{:url('index/article/detail',['id'=>$vo['id']])}" class="list-item-inner">
+                        {$vo['abstract']}
+                    </a>
+                    <div class="item-info">
+                        <div class="date">
+                            {$vo['create_time']}
+                        </div>
+                        <div class="author">
+                            {if $vo['user_id'] > 0}
+                            <a href="{:url('index/article/getUserArticleList',['user_id'=>$vo['user_id']])}">{$vo['nickname']}</a>
+                            {/if}
+                        </div>
+                        <div class="collect">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#icon-shoucang"></use>
+                            </svg>
+                            <div class="collect-text" onclick="addFavorite({$vo['id']})">
+                                <span>收藏</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {/if}
+                {/volist}
+                <div class="paging">
+                    {$list|raw}
+                    </div>
+
+            </div>
+            <div class="list-innner-right ">
+                <div class="classify clearfix">
+                    <div class="classify-title">
+                        专业分类
+                    </div>
+                    <div class="classify-inner">
+                        {volist name="catalog_list" id="vo"}
+                        <a href="{:url('index/article/getArticleList',['catalog_id'=>$vo['id']])}" class="classify-inner-item">
+                            {$vo['name']}
+                        </a>
+                        {/volist}
+
+
+                    </div>
+                </div>
+                <div class="guess clearfix">
+                    <div class="guess-title">
+                        猜你喜欢
+                    </div>
+                    <div class="guess-inner">
+                        {volist name="like_list" id="vo" key="k"}
+                        <a href="{:url('index/article/detail',['id'=>$vo['id']])}" class="guess-inner-item">
+                            <span class=" guess-number label label-default">{$k}</span>
+                            <span class="guess-item-text">{$vo['title']}</span>
+                        </a>
+                        {/volist}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{/block}

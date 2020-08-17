@@ -1,0 +1,51 @@
+{extend name="layouts/cms"}
+{block name='body-content'}
+<form class="layui-form form-opArticle layui-form-pane">
+
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">关键词:</label>
+        <div class="layui-input-block">
+                <textarea placeholder="请输入过滤文本或正则表达式" name="keyword" required
+                          lay-verify="required" class="layui-textarea"></textarea>
+        </div>
+        <div class="layui-form-mid layui-word-aux">正则表达式示例：过滤script（"/<(script.*?)>(.*?)<(\/script.*?)>/si"）</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">过滤方式</label>
+        <div class="layui-input-block">
+            <input type="radio" name="type" value="1" title="之前" checked>
+            <input type="radio" name="type" value="2" title="中间">
+            <input type="radio" name="type" value="3" title="之后">
+        </div>
+    </div>
+
+
+    {:token()}
+    <div class="layui-form-item">
+        <div class="layui-input-block div-form-op">
+            <button class="layui-btn" type="button" onclick="add()">提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">放弃</button>
+        </div>
+    </div>
+</form>
+
+{/block}
+
+{block name='single-content'}
+<script src="__CMS__/js/common.js"></script>
+
+<script>
+    //按钮的点击事件
+    function add() {
+
+        var toUrl = "{:url('admin/filter/addFilter')}";
+        var postData = $(".form-opArticle").serialize();
+        ToPostPopupsDeal(toUrl, postData);
+    }
+</script>
+
+
+
+
+
+{/block}

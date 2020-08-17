@@ -1,0 +1,193 @@
+{extend name="common/header"}
+
+{block name='body-content'}
+    <div class="session publish">
+        <div class="data-updata-text container">
+            <p class="data-updata-title">完善信息</p>
+        </div>
+        <div class="complete container">
+            <div class="complete-data">
+                <div class="complete-title">
+                    <span class="star">*</span>
+                    <span class="complete-inner-title">标题</span>
+                    <input name="title" class="text" />
+
+                </div>
+                <div class="complete-title">
+                    <span class="star">*</span>
+                    <span class="complete-inner-title">分类</span>
+                    <div class="dropdown">
+                        <select name="catalog_id">
+                            <option>选择分类</option>
+                            {volist name="catalog_list" id="vo"}
+                            <option value="{$vo['id']}">{if condition="$vo['level'] neq 0"} |{/if}<?php echo str_repeat('-',$vo['level'] * 4) ?>{$vo['name']}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="classify-tip">提示：没有找到所属分类 请放在其他类别</div>
+                <div class="complete-title ">
+                    <span class="complete-inner-title">标签</span>
+                    <div class="addtag" id="tagWrapper">
+                    </div>
+                    <button type="button" class="btn add" data-toggle="modal" data-target="#myModal">添加标签</button>
+                    <!-- <div id="tag" data-toggle="modal" data-target="#myModal">+</div> -->
+                </div>
+                <div class="complete-title">
+                        <span class="star">*</span>
+                    <span class="complete-inner-title">内容</span>
+                    <div id="editor">
+
+                    </div>
+                </div>
+            </div>
+            <div class="complete"><a onclick="addArticle()">确认提交</a></div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">添加标签</h4>
+                </div>
+                <div class="modal-body">
+                    <input style="width: 100%;height:30px;" id="tagVal" placeholder="请输入标签名" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="addTagBtn">添加</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--    <div class="footer">
+        <div class="container">
+            <div class="footer-nav">
+                <ul>
+                    <li><a href="#">联系我们</a> <span>|</span></li>
+                    <li><a href="#">关于本站</a> <span>|</span></li>
+                    <li><a href="#">版权声明</a> <span>|</span></li>
+                    <li><a href="#">友情链接</a> <span>|</span></li>
+                    <li><a href="#">网站地图</a> </li>
+                </ul>
+            </div>
+            <p class="footer-desc">如有侵权请联系QQ875626088我们会在第一时间删除处理<span>|</span>陕ICP备15010238号</p>
+        </div>
+    </div>-->
+{load file='__EDITOR__/wangEditor.js'}
+<script>
+    var E = window.wangEditor
+    var editor = new E('#editor')
+    // 或者 var editor = new E( document.getElementById('editor') )
+    // 配置服务器端地址
+    editor.customConfig.uploadImgServer = "{:url('api/upload/uploadFile')}";
+    editor.customConfig.uploadFileName = 'file';
+    // 将 timeout 时间改为 3s
+    editor.customConfig.uploadImgTimeout = 10000;
+    editor.create()
+
+    //修改按钮的点击事件
+    function addArticle() {
+        var content=editor.txt.html();
+        var title = $('input[name="title"]').val();
+        var catalog_id = $(".dropdown").find("option:selected").val();
+        var tags = [];
+      $(".tagval").each(function(i,e){
+          tags[i]= $(this).context.innerText;
+        });
+        //console.log(tags);
+
+        var toUrl = "{:url('index/article/addArticle')}";
+        var postData = {
+            title:title,
+            content:content,
+            catalog_id:catalog_id,
+            tag:tags,
+            __token__:"{$Request.token}",
+
+        };
+        console.log(postData);
+        $.post(
+            toUrl,
+            postData,
+            function (result) {
+                if(result.code == 0){
+                    alert(result.msg);
+                }else{
+                    //失败
+                    alert(result.msg);
+                }
+            },"JSON");
+
+    }
+
+</script>
+
+
+    <script>
+        function closeTag(el) {
+            $(el).parent().remove();
+        }
+
+        // $(function () {
+        //     $('.summernote').summernote({
+        //         height: 800,
+        //         tabsize: 2,
+        //         lang: 'zh-CN'
+        //     });
+        // })
+
+
+        $(function () {
+            // 添加标签验证
+            $("#addTagBtn").on('click', function () {
+                var tags = $('.tag');
+                var val = $('#tagVal').val();
+
+                if (tags.length >= 5) {
+                    alert('最多只能添加5个标签');
+                    return;
+                }
+
+                if (val == '') {
+                    alert('请输入标签名');
+                    return;
+                }
+
+                var temp = false;
+                if (tags.length <= 0) {
+                    addTags(val);
+                } else {
+                    for (let i = 0; i < tags.length; i++) {
+                        console.log($(tags[i]).find('.tagval').text());
+                        if ($(tags[i]).find('.tagval').text() == val) {
+                            temp = false;
+                            break;
+                        } else {
+                            temp = true;
+                        }
+                    }
+
+                    if (temp) {
+                        addTags(val);
+                    } else {
+                        alert('存在重复标签')
+                    }
+                }
+            });
+
+            // 添加tag方法
+            function addTags(val) {
+                var input =
+                    `<div class='tag' name='tags[]'><span class="tagval">${val}</span><span class="closetag" onclick="closeTag(this)">X</span></div>`;
+                $("#tagWrapper").append(input);
+                $('#tagVal').val('');
+                $('#myModal').modal('hide');
+            }
+        })
+    </script>
+
+{/block}

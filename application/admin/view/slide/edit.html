@@ -1,0 +1,92 @@
+{extend name='layouts/cms'}
+{block name='body-content'}
+{extend name='layouts/cms'}
+{block name='body-content'}
+<form class="layui-form form-opAdmins layui-form-pane">
+    <div class="layui-form-item">
+        <label class="layui-form-label">标题：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="name" required lay-verify="required" value="{$info['name']}"
+                   placeholder="请输入标题" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">请十个字以内</div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序：</label>
+        <div class="layui-input-inline">
+            <input type="number" name="list_order" value="{$info['list_order']}" required lay-verify="required"
+                   placeholder="" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">(数字越大，排序越靠前)</div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">链接：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="seo_title" required lay-verify="required" value="{$info['url']}"
+                   placeholder="请输入标题" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">请十个字以内</div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">是否大图</label>
+        <div class="layui-input-block">
+            <input type="radio" name="type" value="1" title="大图" {if ($info['type'] == 1)}
+            checked
+            {/if}>
+            <input type="radio" name="type" value="0" title="小图"{if ($info['type'] == 1)}
+            checked
+            {/if}>
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">描述：</label>
+        <div class="layui-input-block">
+                <textarea placeholder="请输入内容" name="description" required
+                          lay-verify="required" class="layui-textarea">{$info['description']}</textarea>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">图片：</label>
+        <div class="layui-upload layui-input-inline">
+            <button type="button" name="img_upload" class="layui-btn btn_upload_img">
+                <i class="layui-icon">&#xe67c;</i>上传图片
+            </button>
+            <img class="layui-upload-img img-upload-view"
+                 src="{$info['image']}">
+        </div>
+    </div>
+    <input type="hidden" name="image" class="menu-icon"
+           value="{$info['image']}">
+
+    {:token()}
+    <div class="layui-form-item">
+        <div class="layui-input-block div-form-op">
+            <button class="layui-btn" type="button" onclick="edit({$info['id']})"
+                    lay-submit lay-filter="formDemo">修改
+            </button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+
+{/block}
+
+{block name='single-content'}
+<script src="__CMS__/js/common.js"></script>
+<script>
+
+    function edit(id) {
+        var postData = $(".form-opAdmins").serialize();
+        var toUrl = "{:url('admin/slide/editSlide',['id'=>'AdminID'])}";
+        toUrl = toUrl.replace('AdminID', id);
+        ToPostPopupsDeal(toUrl, postData);
+    }
+
+</script>
+{/block}

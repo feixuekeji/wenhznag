@@ -1,0 +1,161 @@
+{extend name="common/header"}
+
+{block name='body-content'}
+    <div class="list container session">
+        <div class="current-position">
+            <span class="current">当前位置：</span>
+            <a href="/" class="position">工程平台</a>
+            {volist name="catalog_path" id="vo"}
+            <span class="next">></span>
+            <a href="{:url('index/article/getArticleList',['catalog_id'=>$vo['id']])}" class="position">{$vo['name']}</a>
+            {/volist}
+        </div>
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+        <script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+        <div class="list-innner">
+            <div class="detail">
+                <div class="detail-item">
+                    <h1 class="detail-item-title">
+                        {$info['title']}
+                    </h1>
+                </div>
+                <div class="detail-index">
+                    {if $info['user_id'] > 0}
+                    <a class="public-index" href="{:url('index/article/getUserArticleList',['user_id'=>$info['user_id']])}">{$info['nickname']}</a>
+                    {/if}
+                    <span class="date">{$info['create_time']}</span>
+                </div>
+                <div class="detail-artical" id="detail-artical">
+                    {$info['content']|raw}
+                </div>
+                <div class="full">
+                    展开全文阅读<svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-xiangxia"></use>
+                    </svg>
+                </div>
+                <div class="up-down">
+                    <div class="up">
+                        <span>上一篇：</span> {if !empty($preAndNext['pre']['id'])}<a href="{:url('index/article/detail',['id'=>$preAndNext['pre']['id']])}">{$preAndNext['pre']['title']}</a>
+                        {else}
+                        <a>没有了</a>
+                        {/if}
+                    </div>
+                    <div class="down">
+                        <span>下一篇：</span>{if !empty($preAndNext['next']['id'])}<a href="{:url('index/article/detail',['id'=>$preAndNext['next']['id']])}">{$preAndNext['next']['title']}</a>
+                        {else}
+                        <a>没有了</a>
+                        {/if}
+                    </div>
+                </div>
+                <div class="guess-like">
+                    <a href="#" class="like-title">
+                        猜你喜欢
+                    </a>
+
+                    {volist name="hot_list" id="vo"}
+                    <div class="list-item1">
+                        <a href="{:url('index/article/detail',['id'=>$vo['id']])}" class="list-item-img" style="background-image: url({$vo['picture']})">
+                        </a>
+                        <div class="list-item-text">
+                            <a href="{:url('index/article/detail',['id'=>$vo['id']])}" class="item-title">{$vo['title']}</a>
+                            <a href="{:url('index/article/detail',['id'=>$vo['id']])}" class="item-artical">{$vo['abstract']}</a>
+                            <div class="item-info">
+                                <div class="date">
+                                    {$vo['create_time']|default="时间不详"}
+                                </div>
+                                <div class="author">
+                                    {if $vo['user_id'] > 0}
+                                    <a href="{:url('index/article/getUserArticleList',['user_id'=>$vo['user_id']])}">{$vo['nickname']}</a>
+                                    {else}
+                                    <a href="#">管理员</a>
+                                    {/if}
+                                </div>
+                                <div class="collect">
+                                    <svg class="icon" aria-hidden="true">
+                                        <use xlink:href="#icon-shoucang"></use>
+                                    </svg>
+                                    <div class="collect-text" onclick="addFavorite({$vo['id']})">
+                                        <span>收藏</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/volist}
+                </div>
+
+            </div>
+            <div class="list-innner-right ">
+                <div class="classify clearfix">
+                    <div class="classify-title">
+                        专业分类
+                    </div>
+                    <div class="classify-inner">
+                        {volist name="catalog_list" id="vo"}
+                        <a href="{:url('index/article/getArticleList',['catalog_id'=>$vo['id']])}" class="classify-inner-item">
+                            {$vo['name']}
+                        </a>
+                        {/volist}
+
+
+                    </div>
+                </div>
+                <div class="guess clearfix">
+                    <div class="guess-title">
+                        猜你喜欢
+                    </div>
+                    <div class="guess-inner">
+
+                        {volist name="like_list" id="vo" key="k"}
+                        <a href="{:url('index/article/detail',['id'=>$vo['id']])}" class="guess-inner-item">
+                            <span class=" guess-number label label-default">{$k}</span>
+                            <span class="guess-item-text">{$vo['title']}</span>
+                        </a>
+                        {/volist}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+
+    $(function(){
+        var div_height = $('#detail-artical').height();
+        console.log(div_height, 'h');
+        if(div_height > 600){
+            $('#detail-artical').css({'max-height':'600px', 'overflow': 'hidden'});
+        } else if (div_height < 600) {
+            $('.full').css({'display':'none'});
+            return;
+        }
+        $('.full').on('click',bindRead_more);
+        function bindRead_more(){
+            $('#detail-artical').css({'max-height': div_height + 'px'});
+            setTimeout(() => {
+                $('.full').css({'display':'none'});
+            }, 100);
+        }
+
+    })
+
+
+    function addFavorite(id) {
+        var toUrl = "{:url('index/favorite/addFavorite')}";
+        var postData = {article_id:id};
+        $.post(
+            toUrl,
+            postData,
+            function (result) {
+                alert(result.msg);
+                if(result.code == 0){
+
+                }else{
+                    //失败
+                }
+            },"JSON");
+    }
+</script>
+{/block}

@@ -1,0 +1,242 @@
+{include file="header" /}
+
+		<div class="layui-container">
+
+			<div class="layui-row layui-col-space15">
+				<div class="layui-col-md8 content detail">
+					<div class="fly-panel detail-box">
+						<h1 id="h1title"></h1>
+						<div id="divinfo" class="fly-detail-info">
+
+						</div>
+						<hr/>
+                        <span class="layui-breadcrumb" id="location">
+                            <a href="/">首页</a>
+                            <a href="/demo/">演示</a>
+                            <a><cite>导航元素</cite></a>
+                        </span>
+						<div id="divdetail" class="detail-body photos">
+
+						</div>
+
+						<div class="qing-blog-foot am-hide-sm-only">
+							<span class="left" id="pre"><<<a href="/B20170721175158.html">无</a></span>
+							<span class="right" id="next"><a href="/b20170207233513.html">无</a>>></span>
+						</div>
+
+						<div class="fly-panel detail-box" id="flyReply">
+							<fieldset class="layui-elem-field layui-field-title" style="text-align: center;">
+								<legend>评论</legend>
+							</fieldset>
+
+							<ul class="jieda" id="jieda">
+
+							</ul>
+
+							<div class="layui-form layui-form-pane">
+								<form action="">
+									<div class="layui-form-item layui-form-text">
+
+										<div class="layui-input-block">
+											<textarea id="L_content" name="content" lay-verify="content" placeholder="请输入内容" class="layui-textarea fly-editor"></textarea>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<button class="layui-btn" lay-filter="formReply" lay-submit>提交回复</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+					<div class="layui-col-md4">
+						<dl class="fly-panel fly-list-one" id="dlFuli">
+							<dt class="fly-panel-title">今日福利</dt>
+
+						</dl>
+
+						<dl class="fly-panel fly-list-one" id="dlTopArticle">
+							<dt class="fly-panel-title">热文排行</dt>
+
+						</dl>
+
+						<dl class="fly-panel fly-list-one" id="similarArticle">
+							<dt class="fly-panel-title">相关文章</dt>
+
+						</dl>
+
+						<div class="fly-panel">
+							<div class="fly-panel-title">
+								广而告之
+							</div>
+							<div class="fly-panel-main" id="divAdv">
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+			<script src="__LAYUI__/layui.js"></script>
+
+			<script type="text/javascript" src="__JS__/app.js"></script>
+
+
+			<script>
+
+                var $, layer, form, laypage, element, layedit, editIndex;
+                layui.use(['layer', 'form', 'element', 'laypage', 'layedit'], function() {
+                    $ = layui.jquery;
+                    layer = layui.layer;
+                    form = layui.form;
+                    element = layui.element;
+                    laypage = layui.laypage;
+                    layedit = layui.layedit;
+                    editIndex = layedit.build('L_content', {
+                        height: 150,
+                        tool: ['face', '|', 'strong', 'italic', 'underline', 'del', '|', 'link'],
+                    });
+
+
+
+
+                    GetArticleById()
+                    GetTopArticleList();
+                    GetSimilarList();
+                    GetTopResourceList();
+                    GetOneFuli();
+                    GetAdv();
+                    getArticletype();
+
+                });
+
+                function replysome(name) {
+                    $("html,body").animate({
+                        scrollTop: 1000000
+                    }, 500);
+                    var spinname = '<spin style="color: #01AAED;">@' + name + '</spin><spin style="color: black;">&nbsp;</spin>'
+                    $("#L_content").val(spinname);
+                    editIndex = layedit.build('L_content', {
+                        height: 150,
+                        tool: ['face', '|', 'strong', 'italic', 'underline', 'del', '|', 'link'],
+                    });
+                }
+
+
+                //获取文章
+                function GetArticleById() {
+                    var index = layer.load(0, {
+                        shade: false,
+                        offset: ['100px']
+                    }); //0代表加载的风格，支持0-2
+
+                    $.ajax({
+                        url: "{:url('index/index/ajaxGetArticle',['id'=>$id])}" ,
+                        type: 'get', //GET
+                        async: true, //或false,是否异步
+                        beforeSend: function(request) {
+                                         request.setRequestHeader("Authorization", '11655');
+                                    },
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        success: function(jsondata) {
+                            layer.close(index);
+                            if(jsondata.status == 0) {
+                                var item = jsondata.data;
+                                var catalog1 = jsondata.catalog1;
+                                var catalog2 = jsondata.catalog2;
+                                //var commentlist = jsondata.Data.detail;
+
+                                $("#h1title").html(item.title);
+                                $("#divinfo").html("");
+                                /*if(item.Istop == 1) {
+                                    $("#divinfo").append('<span class="layui-badge layui-bg-black">置顶</span>');
+                                }
+                                if(item.Ishot == 1) {
+                                    $("#divinfo").append('<span class="layui-badge layui-bg-red">推荐</span>');
+                                }
+                                $("#divinfo").append('<span>  <i class="fa fa-clock-o" title="时间"></i>' + item.Createtime.substr(0, 10) + '</span>');
+                                $("#divinfo").append('<span>  <i class="fa fa-user" title="作者"></i>' + item.Author + '</span>');
+                                $("#divinfo").append('<span>  <i class="fa fa-tag" title="标签"></i>' + getarticletype(item.Articletype) + '</span>');
+                                $("#divinfo").append('<span class="fly-list-nums"><a href="#comment"><i class="fa fa-commenting" title="回答"></i> ' + commentlist.length + '</a><i class="fa fa-eye" title="浏览"></i> ' + item.Readcount + ' </span>');*/
+
+                                $("#divdetail").html("").html(item.content);
+
+                                $("#location").html("");
+                                $("#location").append('当前位置：<a href="articleList.html?id=' + catalog1.id +'">'+catalog1.name+'</a><span lay-separator="">/</span>');
+
+                                $("#location").append('<a href="articleList.html?id=' + catalog2.id +'">'+catalog2.name+'</a><span lay-separator="">/</span>');
+                                $("#location").append('<a><cite>正文</cite></a>');
+                                if(jsondata.pre) {
+                                    $("#pre").html("");
+                                    $("#pre").append('上一篇<a href="articleDetail.html?id=' + jsondata.pre.id +'">'+jsondata.pre.title+'</a>');
+                                }
+                                if(jsondata.next) {
+                                    $("#next").html("");
+                                    $("#next").append('下一篇<a href="articleDetail.html?id=' + jsondata.next.id +'">'+jsondata.next.title+'</a>');
+                                }
+
+                                $("#jieda").html("");
+                                /*$.each(commentlist, function(index, item) {
+                                    var jiedahtml = '';
+                                    jiedahtml += '<li class="jieda-daan">';
+                                    jiedahtml += '<div class="detail-about detail-about-reply">';
+                                    jiedahtml += '<a class="fly-avatar" href="javascript:void(0)"><img src="' + item.Commetfigureurl + '" onerror="errorFigure(this)" /></a>';
+                                    jiedahtml += '<div class="fly-detail-user">';
+                                    jiedahtml += '<a href="javascript:void(0)" class="fly-link">';
+                                    jiedahtml += '<cite>' + item.Commentname + '</cite>';
+                                    jiedahtml += '</a>';
+                                    jiedahtml += '</div>';
+                                    jiedahtml += '<div class="detail-hits">';
+                                    jiedahtml += '<span>' + item.Createtime.substr(0, 10) + '</span>';
+                                    jiedahtml += '</div>';
+                                    jiedahtml += '</div>';
+                                    jiedahtml += '<div class="detail-body jieda-body photos">';
+                                    jiedahtml += '<p>' + item.Comment + '</p>';
+                                    jiedahtml += '</div>';
+                                    jiedahtml += '<div class="jieda-reply">';
+                                    jiedahtml += '<span onclick="replysome(&quot;' + item.Commentname + '&quot;)" type="reply">';
+                                    jiedahtml += ' <i class="fa fa-comment"></i>';
+                                    jiedahtml += ' 回复';
+                                    jiedahtml += ' </span>';
+                                    jiedahtml += ' </div></li>';
+                                    $("#jieda").append(jiedahtml);
+                                });*/
+
+                            }
+                        }
+
+                    });
+
+                }
+
+                //相关推荐
+
+                function GetSimilarList() {
+                    $.ajax({
+                        url: "{:url('index/index/getSimilarList',['id'=>$id])}",
+                        type: 'get', //GET
+                        async: true, //或false,是否异步
+                        dataType: 'json',
+                        success: function(jsondata) {
+                            if(jsondata.status == 0) {
+                                $("#similarArticle").html("").append('<dt class="fly-panel-title">相关文章</dt>');
+                                $.each(jsondata.data, function(index, item) {
+                                    $("#similarArticle").append('<dd><a href="articleDetail.html?id=' + item.id + '"><i class="fa fa-thumbs-up"></i>' + item.title + '</a></dd>');
+                                });
+
+                            }
+                        },
+                        error: function(xhr, textStatus) {
+
+                        },
+                        complete: function() {
+
+                        }
+                    });
+
+                }
+			</script>
+{include file="footer" /}

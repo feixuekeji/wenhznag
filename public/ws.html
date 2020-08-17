@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+</head>
+
+<body>
+<script>
+    var wsServer = 'ws://127.0.0.1:5432';
+    var websocket = new WebSocket(wsServer);
+    websocket.onopen = function (evt) {
+        console.log("Connected to WebSocket server.");
+        //ws.send("Hello WebSockets!");
+        websocket.send(123);
+        //设置心跳，避免服务器断开
+        setInterval(function () {
+            websocket.send(123);
+        }, 30000)
+    };
+
+    websocket.onclose = function (evt) {
+        console.log("Disconnected");
+    };
+
+    websocket.onmessage = function (evt) {
+        console.log('Retrieved data from server: ' + evt.data);
+    };
+
+    websocket.onerror = function (evt, e) {
+        console.log('Error occured: ' + evt.data);
+    };
+</script>
+
+</body>
+</html>

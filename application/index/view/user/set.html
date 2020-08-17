@@ -1,0 +1,264 @@
+{extend name="common/header"}
+
+{block name='body-content'}
+    <div class="mycenter session container">
+        <div class="mycenter-left">
+            <div class="mycenter-list">
+                <a href="./myCenter.html" class="mycenter-list-item ">
+                    <div class="item-img">
+                        <img src="__INDEX__/images/fabu.png" />
+                    </div>
+                    <div class="item-title">
+                        我的发布
+                    </div>
+
+                </a>
+                <a href="./myCollect.html" class="mycenter-list-item">
+                    <div class="item-img">
+                        <img src="__INDEX__/images/shoucang.png" />
+                    </div>
+                    <div class="item-title">
+                        我的收藏
+                    </div>
+                </a>
+                <a href="./myCare.html" class="mycenter-list-item">
+                    <div class="item-img">
+                        <img src="__INDEX__/images/guanzhu.png" />
+                    </div>
+                    <div class="item-title">
+                        我的关注
+                    </div>
+                </a>
+                <a href="./myFans.html" class="mycenter-list-item">
+                    <div class="item-img">
+                        <img src="__INDEX__/images/fensi.png" />
+                    </div>
+                    <div class="item-title">
+                        我的粉丝
+                    </div>
+
+                </a>
+                <a href="./set.html" class="mycenter-list-item active">
+                    <div class="item-img">
+                        <img src="__INDEX__/images/shezhi.png" />
+                    </div>
+                    <div class="item-title">
+                        账号设置
+                    </div>
+                </a>
+            </div>
+            <div class="mycenter-list-inner set">
+                <form method="POST" enctype="multipart/form-data" id="form">
+                    <div class="people-list-item ">
+                        <label>头像：</label>
+                        <div class="img-box full">
+                            <section class=" img-section">
+                                <div class="z_photo upimg-div clear">
+                                    <!--<section class="up-section fl">
+                                                    <span class="up-span"></span>
+                                                    <img src="/img/buyerCenter/a7.png" class="close-upimg">
+                                                    <img src="/img/buyerCenter/3c.png" class="type-upimg" alt="添加标签">
+                                                    <img src="/img/test2.jpg" class="up-img">
+                                                    <p class="img-namep"></p>
+                                                    <input id="taglocation" name="taglocation" value="" type="hidden">
+                                                    <input id="tags" name="tags" value="" type="hidden">
+                                                </section>-->
+                                    <section class="z_file fl btn_upload_img" style="border-radius: 50%;overflow: hidden;" >
+                                        {if empty($info['avatar'])}
+                                        <img src="__INDEX__/images/a11.png" class="add-img">
+                                        {else}
+                                        <img src="{$info['avatar']}" class="add-img">
+                                        {/if}
+                                    </section>
+                                </div>
+                            </section>
+                        </div>
+                        <aside class="mask works-mask">
+                            <div class="mask-content">
+                                <p class="del-p ">您确定要删除作品图片吗？</p>
+                                <p class="check-p"><span class="del-com wsdel-ok">确定</span><span
+                                        class="wsdel-no">取消</span></p>
+                            </div>
+                        </aside>
+                    </div>
+                    <input type="hidden" name="avatar" class="menu-icon" value="{$info['avatar']}">
+                    <div class="people-list-item ">
+                        <label>昵称：</label>
+                        <input name="nickname" class="" value="{$info['nickname']}" type="text" />
+                    </div>
+                    <div class="people-list-item ">
+                        <label>性别：</label>
+                        <input name="gender" class="sex" value="1" type="radio" {if ($info['gender'] == 1)}
+                        checked
+                        {/if} />男
+                        <input name="gender" class="sex" value="2" type="radio" {if ($info['gender'] == 2)}
+                        checked/>女
+                    </div>
+                    <div class="people-list-item ">
+                        <label>电话号：</label>
+                        <input class="" name="mobile" value="{$info['mobile']}" type="text" />
+                    </div>
+                    <div class="people-list-item ">
+                        <label>地址：</label>
+                        <input class="" value="{$info['nickname']}" type="text" />
+                    </div>
+                    <div class="people-list-item ">
+                        <label>特长：</label>
+                        <input class="" value="{$info['nickname']}" type="text" />
+                    </div>
+                    {:token()}
+                    <hr />
+                    <input type="button" class="submit" value="提交" onclick="edit({$info['id']})">
+                </form>
+            </div>
+        </div>
+        <div class="mycenter-right">
+            <div class="recommend-user">
+                <div class="title">
+                    推荐用户
+                </div>
+                <div class="user-list">
+                    <!--<a class="user-list-item">
+                        <div class="user-img" style="background-image: url('__INDEX__/images/headimg.png')">
+                        </div>
+                        <div class="user-name">
+                            harry1
+                        </div>
+                    </a>-->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="__INDEX__/lib/jquery/jquery.js"></script>
+    <script src="__INDEX__/lib/bootstrap/js/bootstrap.js"></script>
+    <script src="__INDEX__/js/common.js"></script>
+    <script>
+        $(".mycenter-list-item").on('click', function () {
+            $(this).addClass("active").siblings().removeClass("active");
+        })
+        $(".head-img").on('click', function () {
+            $("#getimg").click();
+            // $("#changSrc").on('click', function () {
+            // $(this).attr("src","");
+            // })
+        })
+        $(function () {
+            $("#getimg").change(function (e) {
+                console.log(e, "111");
+                console.log("12121")
+                // $("#changSrc").attr("src","");
+            })
+        })
+    </script>
+    <script>
+        // function readImage(fileObj, box, max) {
+        //     // if(max&&fileObj.files.length>max){
+        //     //     fileObj.value='';
+        //     //     alert('文件数量超过上限,请重新选取')
+        //     // }
+        //     document.querySelector(box).innerHTML = '';
+        //     var i = 0;
+        //
+        //     var frObj = new FileReader();
+        //
+        //     frObj.onload = function () {
+        //         var img = document.createElement("img");
+        //         img.src = frObj.result;
+        //         document.querySelector(box).appendChild(img);
+        //         // if(i<fileObj.files.length){
+        //         //     i++;
+        //         //     frObj.readAsDataURL(fileObj.files[i]);
+        //         // }
+        //     }
+        //     frObj.readAsDataURL(fileObj.files[i]);
+        // }
+    </script>
+    <script>
+        function edit(id) {
+            var toUrl = "{:url('index/user/editMyInfo',['id'=>'AID'])}";
+            toUrl = toUrl.replace('AID', id);
+            var postData = $("#form").serialize();
+            console.log(postData);
+            $.post(
+                toUrl,
+                postData,
+                function (result) {
+                    console.log(result);
+                    alert(result.msg)
+                    if(result.code == 1){
+
+                    }else{
+
+                    }
+                },"JSON");
+        }
+
+        $(document).ready(function(){
+            getTopUser()
+
+
+        });
+
+        function getTopUser() {
+            var toUrl = "{:url('index/user/getTopUser',['id'=>'AID'])}";
+            var postData = {};
+            $.post(
+                toUrl,
+                postData,
+                function (result) {
+                    if(result.code == 0){
+                        var str_html = '';
+                        $.each(result.data.data,function (i,e) {
+                            str_html +=
+                                "<a class=\"user-list-item\" href='"+e.id+"'>\n" +
+                                "                        <div class=\"user-img\" style=\"background-image: url("+e.avatar+")\">\n" +
+                                "                        </div>\n" +
+                                "                        <div class=\"user-name\">\n" +e.nickname + "/n"+
+                                "                        </div>\n" +
+                                "                    </a>";
+                        });
+                        $(".user-list").html(str_html);
+                    }else{
+                        //失败
+                        layer.msg(result.message);
+                    }
+                },"JSON");
+        }
+
+        layui.use('upload', function () {
+            var upload = layui.upload;
+            //普通图片上传
+            var uploadInst = upload.render({
+                elem: '.btn_upload_img'
+                , type: 'images'
+                , exts: 'jpg|png|gif' //设置一些后缀，用于演示前端验证和后端的验证
+                //,auto:false //选择图片后是否直接上传
+                //,accept:'images' //上传文件类型
+                , url: '/api/upload/img_file'
+                , before: function (obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function (index, file, result) {
+                        $('.add-img').attr('src', result); //图片链接（base64）
+                    });
+                }
+                , done: function (res) {
+                    //dialog.tip(res.message);
+                    alert('上传成功');
+                    //如果上传成功
+                    if (res.status == 1) {
+                        $('.menu-icon').val(res.data.url);
+                    }
+                }
+                , error: function () {
+                    //演示失败状态，并实现重传
+                    return layer.msg('上传失败,请重新上传');
+                }
+            });
+        });
+
+    </script>
+{/block}

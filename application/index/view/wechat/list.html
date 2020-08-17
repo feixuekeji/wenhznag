@@ -1,0 +1,79 @@
+{extend name="common/header"}
+
+{block name='body-content'}
+    <div class="public container session">
+        <div class="current-position">
+            <span class="current">当前位置：</span>
+            <a href="/" class="position">工程平台</a>
+            <span class="next">></span>
+            <a href="#" class="position">{$info['name']}</a>
+        </div>
+        <div class="public-inner">
+            <div class="public-inner-left">
+                <div class="public-title">
+                    公众号推荐
+                </div>
+                <div class="publist-list">
+                    {volist name="top_list" id="vo"}
+                    <a href="{:url('index/wechat/getArticle',['wechat_id'=>$vo['id']])}" class="public-list-item">
+                        {$vo['name']}
+                    </a>
+                    {/volist}
+                </div>
+            </div>
+            <div class="public-everyone">
+                <div class="public-item-title">
+                    <div class="public-item-img" style="background-image: url({$info['avatar']})">
+
+                    </div>
+                    <div class="public-item-text">
+                        <h1 class="item-title">
+                            {$info['name']}
+                        </h1>
+                        <div class="wechat-id">
+                            <span>微信号：</span><span>{$info['account']}</span>
+                        </div>
+                        <div class="item-desc">
+                            <span>功能介绍：</span>
+                            <div class="func">{$info['profile']}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="public-item-inner">
+                    <div class="public-items">
+                        {volist name="list" id="vo"}
+                        <a href="{:url('index/article/detail',['id'=>$vo['id']])}" class="public-item">
+                            <div class="item-img" style="background-image:url({$vo['picture']})">
+                            </div>
+                            <div class="item-text">
+                                <div class="item-text-inner">
+                                    {$vo['title']}
+                                </div>
+                                <div class="date">
+                                    {$vo['create_time']}
+                                </div>
+                            </div>
+                        </a>
+                        {/volist}
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="paging">
+            {$list|raw}
+        </div>
+
+    </div>
+
+    <script>
+        $(function () {
+            $('.public-inner-item').hover(function () {
+                $(this).find("." + "at-once").addClass("block");
+            }, function () {
+                $(this).find("." + "at-once").removeClass("block");
+            });
+        })
+    </script>
+{/block}
